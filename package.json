@@ -1,0 +1,15 @@
+{
+  "name": "sca-service-onere",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "run": "import.py"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/soichih/sca-service-onere.git"
+  },
+  "author": "Soichi Hayashi <hayashis@iu.edu>",
+  "license": "MIT"
+}
