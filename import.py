@@ -93,5 +93,11 @@ def import_file(config):
     response = requests.put(onere_api+"/dataset/"+dataset_id, data=dataset_json, headers=headers)
     print response
 
+    #generate empty products.json
+    with open('products.json', 'w') as out:
+        #json.dump([{"type": "nifti", "files": niifiles}], out)
+        json.dump([], out)
+
 if "import" in config:
     import_file(config["import"])
+
