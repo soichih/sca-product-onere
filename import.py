@@ -5,8 +5,11 @@ import sys
 import glob
 import errno
 import shutil
-import requests
 import base64
+
+#karst only
+import requests
+import magic
 
 #load config.json
 config_json=open("config.json").read()
@@ -34,6 +37,8 @@ def import_file(config):
 
     #get file stats (file type, etc..)
     filesize = os.path.getsize(path)
+    filedesc = magic.from_file(path)
+    filemime = magic.from_file(path, mine=True)
 
     #run validation tools based on file type
     #TODO..
@@ -85,6 +90,9 @@ def import_file(config):
         files.append({
             'filename': filename,
             'size': filesize,
+
+            'desc': filedesc,
+            'mime': filemime,
             'dir': dest_dir, #to make it easier to access the file via sca-wf/download
         })
     else:
