@@ -80,10 +80,12 @@ def import_file(config):
         files = config["files"] 
 
         #TODO - should I look for duplicate filenames?
+        #if I check duplicate file above, such check shouldn'b be necessary
 
         files.append({
             'filename': filename,
             'size': filesize,
+            'dir': dest_dir, #to make it easier to access the file via sca-wf/download
         })
     else:
         print "failed to load dataset:",dataset_id
