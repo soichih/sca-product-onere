@@ -38,7 +38,7 @@ def import_file(config):
     #get file stats (file type, etc..)
     filesize = os.path.getsize(path)
     filedesc = magic.from_file(path)
-    filemime = magic.from_file(path, mine=True)
+    filemime = magic.from_file(path, mime=True)
 
     #run validation tools based on file type
     #TODO..
