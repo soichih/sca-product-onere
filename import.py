@@ -12,6 +12,9 @@ import base64
 config_json=open("config.json").read()
 config=json.loads(config_json)
 
+jwt=config["jwt"] #jwt used to register new data to onere api
+onere_api=config["onere_api"] #url for onere api
+
 #path where the file to import is stored
 
 def import_file(config):
@@ -21,8 +24,6 @@ def import_file(config):
     path=config["path"]
     filename=os.path.basename(path)
     dataset_id=config["dataset_id"] #dataset id to use to store this file 
-    jwt=config["jwt"] #jwt used to register new data to onere api
-    onere_api=config["onere_api"] #url for onere api
 
     #directory where we store datasets. 
     if "DATASET_DIR" in os.environ:
