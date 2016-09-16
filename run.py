@@ -18,22 +18,20 @@ config=json.loads(config_json)
 jwt=config["jwt"] #jwt used to register new data to onere api
 onere_api=config["onere_api"] #url for onere api
 
-#path where the file to import is stored
+#directory where we store datasets. 
+if "DATASET_DIR" in os.environ:
+    dataset_dir=os.environ["DATASET_DIR"]
+else:
+    dataset_dir="/N/dc2/projects/lifebid/onere/datasets"
+print "using dataset_dir:",dataset_dir
 
 def import_file(config):
-    print "importing"
+    print "importing file to onere dataset archive"
 
     #pull config params
     path=config["path"]
     filename=os.path.basename(path)
     dataset_id=config["dataset_id"] #dataset id to use to store this file 
-
-    #directory where we store datasets. 
-    if "DATASET_DIR" in os.environ:
-        dataset_dir=os.environ["DATASET_DIR"]
-    else:
-        dataset_dir="/N/dc2/projects/lifebid/onere/datasets"
-    print "using dataset_dir:",dataset_dir
 
     #get file stats (file type, etc..)
     filesize = os.path.getsize(path)
@@ -64,8 +62,11 @@ def import_file(config):
     #copy file to dataset directory
     shutil.copy(path, dest_dir+"/"+filename)
 
-    #make sure file is properly copied over
+    #make sure file is properly copied over (check size?)
     #TODO
+
+    #(probably) change permission to read only so that sca/resource api can't easily delete / update the file
+    #(I need to implement some capability to disable modification completely..)
 
     #get the current dataset info
     headers = {
@@ -109,6 +110,27 @@ def import_file(config):
         #json.dump([{"type": "nifti", "files": niifiles}], out)
         json.dump([], out)
 
+def export_file(config):
+    print "exporting from onere dataset archive (just create symlink)"
+
+    datasets=config["datasets"] 
+    for dataset in datasets:
+        src = dataset_dir+"/"+dataset["id"]
+        dest = dataset["name"]
+        try:
+            os.symlink(src, dest)
+        except OSError, e:
+            if e.errno == errno.EEXIST:
+                os.remove(dataset["name"])
+                os.symlink(src, dest)
+
+        #TODO - maybe I should increment the export count on onere api
+
+    with open('products.json', 'w') as out:
+        json.dump([{"type":"onere/dataset", "datasets":datasets}], out)
+
 if "import" in config:
     import_file(config["import"])
 
+if "export" in config:
+    export_file(config["export"])
